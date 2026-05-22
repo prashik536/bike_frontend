@@ -2,24 +2,11 @@ pipeline {
     agent any
 
     environment {
-        // ==========================================
-        // 1. DOCKER HUB CONFIGURATION
-        // ==========================================
-        // The ID of the username/password credential stored in Jenkins
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-creds'
-        // Your Docker Hub username
         DOCKERHUB_USERNAME       = 'prashik536'
-        // The name of the Docker repository
         IMAGE_NAME               = 'bike-frontend'
-        // Create a unique image tag using the build number
         IMAGE_TAG                = "${env.BUILD_NUMBER}"
-
-        // ==========================================
-        // 2. TARGET DEPLOYMENT EC2 CONFIGURATION
-        // ==========================================
-        // The ID of the SSH Username with Private Key credential stored in Jenkins
         DEPLOY_SSH_CREDENTIALS_ID = 'ec2-ssh-key'
-        // Public IP or DNS of the remote EC2 instance where Docker is installed
         DEPLOY_HOST               = '172.31.15.215'
     }
 
@@ -52,7 +39,6 @@ pipeline {
         stage('Deploy to Target EC2') {
             steps {
                 echo 'Deploying to remote EC2 instance via SSH...'
-                // Retrieve the SSH private key securely from Jenkins credentials
                 withCredentials([
                     sshUserPrivateKey(credentialsId: env.DEPLOY_SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
                 ]) {
